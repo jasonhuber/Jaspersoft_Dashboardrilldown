@@ -1,0 +1,92 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="themes/default/easyui.css"></link>
+		<script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+		<script src="http://172.16.252.132:8080/jasperserver-pro601/client/visualize.js?_opt=false"></script>
+		<script type="text/javascript" src="jquery.easyui.min.js"></script>
+	<script>
+		$(function(){
+		visualize({
+		auth: {
+			name: "jasperadmin",
+			password: "jasperadmin",
+			organization: "organization_1"
+		}
+		}, function(v) {
+		v("#first").report({
+        resource: "/public/Samples/Reports/SimpleChart",
+        linkOptions: {
+            events: {
+                "click": function(ev, link) {
+                    if (link.type == "ReportExecution") {
+                        v("#second").report({
+                            resource: link.parameters._report,
+                            params: {
+                                Month: [link.parameters.Month],
+                                Year: [link.parameters.Year]
+                            },
+                        });
+                    }
+                }
+            }
+        },
+        error: function(err) {
+            alert(err.message);
+				}
+			});
+		});
+		});
+	</script>
+	</head>
+	<body>
+	<div class="easyui-tabs" style="width:1000px;height:600px">
+		<div title="Charts" style="padding:10px">
+				<div id="first" style="height:200; padding-bottom:0px"></div>
+				<div id="second" style="height:200; margin-top:50px"></div>
+		</div>
+		<div title="About" style="padding:10px">
+			A simple example created to show how to "drill down" from one report to another. Really the code to pay attention to is: <br />
+			<pre>
+        linkOptions: {
+            events: {
+                "click": function(ev, link) {
+                    if (link.type == "ReportExecution") {
+                        v("#second").report({
+                            resource: link.parameters._report,
+                            params: {
+                                Month: [link.parameters.Month],
+                                Year: [link.parameters.Year]
+                            },
+                        });
+                    }
+                }
+            }
+        },
+			</pre>
+			
+			Where we get the <b>params</b> from <b>link</b> and then add that report to another div.<br />
+			
+			This is also at jsfiddle: <a href="http://jsfiddle.com/user/jasonhuber">jsfiddle.com/user/jasonhuber</a>.<br />
+			
+			*You also need the two reports that are included in this directory.<br />
+			<br />
+			Those reports just have a few things that are special.<br />
+			hyperlinkType = ReportExecution<br />
+			hyperlinkTarget = self<br />
+			Add a<br />
+			SeriesItemHyperlink = _report<br />
+			Then each parameter as a SeriesItemHyperlink making sure it is available as a bucket item.<br />
+			<img src="ChartProperties1.PNG" /><br />
+			<img src="ChartProperties2.PNG" /><br />
+			<img src="ChartProperties3.PNG" /><br />
+		</div>
+		<div title="Download" style="padding:10px">
+			<a href="DashboardDrillDownExample.zip">Here</a><br />
+			Just unzip this somewhere inside of webapps and you are set.<br />
+			Make sure you have added the two JRXML files to your repository as well!<br /><br />
+			
+			<b>*Note port 8081....</b><br />
+		</div>
+		
+	</body>
+</html>
